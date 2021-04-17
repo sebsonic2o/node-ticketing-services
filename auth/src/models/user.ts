@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Password } from '../concerns/password';
 
 // an interface to describe the properties required to create a User
 interface UserAttributes {
@@ -26,6 +27,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+});
+
+// a pre-save hook to hash password
+userSchema.pre('save', async function(done) {
+  if (this.isModified('password')) {
+    const hash = await Password.toHash(this.get('password'));
+    this.set('password', hash);
+  }
+
+  done();
 });
 
 // a custom function to plug in type checking into model
