@@ -1,17 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 
-it('returns 201 on successful signup', async () => {
-  await request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'valid@email.com',
-      password: '12345678'
-    })
-    .expect(201);
-});
-
-it('sets cookie on successful signup', async () => {
+it('returns 201 and sets cookie on successful signup', async () => {
   const response = await request(app)
     .post('/api/users/signup')
     .send({
