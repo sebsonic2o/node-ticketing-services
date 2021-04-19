@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 
 it('returns 200 and clears cookie on successful signout', async () => {
-  await global.signup({ email: 'valid@email.com', password: '12345678' });
+  await global.signup();
 
   const response = await request(app)
     .post('/api/users/signout')

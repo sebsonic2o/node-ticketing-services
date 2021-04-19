@@ -1,9 +1,11 @@
 import request from 'supertest';
 import { app } from '../../app';
 
+const path = '/api/users/signup';
+
 it('returns 201 and sets cookie on successful signup', async () => {
   const response = await request(app)
-    .post('/api/users/signup')
+    .post(path)
     .send({
       email: 'valid@email.com',
       password: '12345678'
@@ -15,7 +17,7 @@ it('returns 201 and sets cookie on successful signup', async () => {
 
 it('returns 400 with invalid email', async () => {
   await request(app)
-    .post('/api/users/signup')
+    .post(path)
     .send({
       email: 'invalidEmail',
       password: '12345678'
@@ -25,7 +27,7 @@ it('returns 400 with invalid email', async () => {
 
 it('returns 400 with invalid password', async () => {
   await request(app)
-    .post('/api/users/signup')
+    .post(path)
     .send({
       email: 'valid@email.com',
       password: '123'
@@ -35,14 +37,14 @@ it('returns 400 with invalid password', async () => {
 
 it('returns 400 with missing email or password', async () => {
   await request(app)
-    .post('/api/users/signup')
+    .post(path)
     .send({
       email: 'valid@email.com'
     })
     .expect(400);
 
   await request(app)
-    .post('/api/users/signup')
+    .post(path)
     .send({
       password: '12345678'
     })
@@ -51,7 +53,7 @@ it('returns 400 with missing email or password', async () => {
 
 it('disallows duplicate emails', async () => {
   await request(app)
-    .post('/api/users/signup')
+    .post(path)
     .send({
       email: 'valid@email.com',
       password: '12345678'
@@ -59,7 +61,7 @@ it('disallows duplicate emails', async () => {
     .expect(201);
 
    await request(app)
-    .post('/api/users/signup')
+    .post(path)
     .send({
       email: 'valid@email.com',
       password: '87654321'

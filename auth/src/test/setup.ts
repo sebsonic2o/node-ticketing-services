@@ -6,7 +6,7 @@ import { app } from '../app';
 declare global {
   namespace NodeJS {
     interface Global {
-      signup({ email, password }: { email: string, password: string }): Promise<string[]>
+      signup({ email, password }?: { email?: string, password?: string }): Promise<string[]>
     }
   }
 }
@@ -37,7 +37,7 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.signup = async ({ email, password }) => {
+global.signup = async ({ email = 'valid@email.com', password = '12345678' } = {}) => {
   const response = await request(app)
     .post('/api/users/signup')
     .send({ email, password })
