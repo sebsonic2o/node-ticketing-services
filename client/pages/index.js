@@ -1,11 +1,7 @@
 import buildClient from '../api/build-client';
 
 const Home = ({ currentUser }) => {
-  console.log(currentUser);
-
-  return (
-    <h1>Landing Page</h1>
-  );
+  return <h1>{currentUser ? 'You are signed in' : 'You are NOT signed in'}</h1>;
 };
 
 Home.getInitialProps = async (context) => {
