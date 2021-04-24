@@ -1,13 +1,22 @@
 {
   "name": "@sebsonic2o-org/common",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
-  "files": ["common"],
+  "types": "index.d.ts",
+  "files": [
+    "build/**/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "del ./build/*",
+    "build": "npm run clean && tsc",
+    "postinstall": "mv ./build/* ./ && rmdir ./build"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "del-cli": "^3.0.1",
+    "typescript": "^4.2.4"
+  }
 }
