@@ -19,7 +19,12 @@ it('cannot be accessed when user is not signed in', async () => {
 });
 
 it('can be accessed when user is signed in', async () => {
+  const response = await request(app)
+    .post(path)
+    .set('Cookie', global.signin())
+    .send({});
 
+  expect(response.status).not.toEqual(401);
 });
 
 it('returns error with invalid title', async () => {
