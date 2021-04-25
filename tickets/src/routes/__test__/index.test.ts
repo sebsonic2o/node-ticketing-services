@@ -13,7 +13,7 @@ const createTicket = () => {
 it('returns list of tickets', async () => {
   const n = 3;
 
-  for(let i=0; i<n; i++) {
+  for (let i=0; i<n; i++) {
     await createTicket();
   }
 

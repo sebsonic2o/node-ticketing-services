@@ -7,7 +7,7 @@ import { app } from '../app';
 declare global {
   namespace NodeJS {
     interface Global {
-      signin({ id, email }?: { id?: string, email?: string }): string[]
+      signin({ email }?: { email?: string }): string[]
     }
   }
 }
@@ -38,9 +38,12 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.signin = ({ id = '1234', email = 'test@test.com' } = {}) => {
+global.signin = ({ email = 'test@test.com' } = {}) => {
   // build jwt payload
-  const payload = { id, email };
+  const payload = {
+    id: new mongoose.Types.ObjectId().toHexString(),
+    email
+  };
 
   // generate jwt
   const token = jwt.sign(payload, process.env.JWT_KEY!);

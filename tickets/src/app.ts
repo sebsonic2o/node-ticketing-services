@@ -5,6 +5,7 @@ import cookieSession from 'cookie-session';
 import { currentUser, errorHandler, NotFoundError } from '@sebsonic2o-org/common';
 
 import { createTicketRouter } from './routes/create';
+import { updateTicketRouter } from './routes/update';
 import { showTicketRouter } from './routes/show';
 import { indexTicketRouter } from './routes/index';
 
@@ -20,6 +21,7 @@ app.use(
 app.use(currentUser);
 
 app.use(createTicketRouter);
+app.use(updateTicketRouter);
 app.use(showTicketRouter);
 app.use(indexTicketRouter);
 
