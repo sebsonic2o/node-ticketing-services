@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
+import { Ticket } from '../../models/ticket';
 
 const path = '/api/tickets';
 
@@ -66,5 +67,18 @@ it('returns error with invalid price', async () => {
 });
 
 it('creates ticket with valid input', async () => {
+  let tickets = await Ticket.find({});
+  expect(tickets.length).toEqual(0);
 
+  await request(app)
+    .post(path)
+    .set('Cookie', global.signin())
+    .send({
+      title: 'title',
+      price: 100
+    })
+    .expect(201);
+
+  tickets = await Ticket.find({});
+  expect(tickets.length).toEqual(1);
 });
