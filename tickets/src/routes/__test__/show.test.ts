@@ -1,4 +1,5 @@
 import request from 'supertest';
+import mongoose from 'mongoose';
 import { app } from '../../app';
 
 const path = '/api/tickets';
@@ -23,8 +24,10 @@ it('returns ticket if ticket is found', async () => {
 });
 
 it('returns error if ticket is not found', async () => {
+  const id = new mongoose.Types.ObjectId().toHexString();
+
   await request(app)
-    .get(`${path}/nosuchid`)
+    .get(`${path}/${id}`)
     .send()
     .expect(404);
 });
