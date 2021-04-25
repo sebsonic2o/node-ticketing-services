@@ -28,13 +28,43 @@ it('can be accessed when user is signed in', async () => {
 });
 
 it('returns error with invalid title', async () => {
+  await request(app)
+    .post(path)
+    .set('Cookie', global.signin())
+    .send({
+      title: '',
+      price: 100
+    })
+    .expect(400);
 
+  await request(app)
+    .post(path)
+    .set('Cookie', global.signin())
+    .send({
+      price: 100
+    })
+    .expect(400);
 });
 
 it('returns error with invalid price', async () => {
+  await request(app)
+    .post(path)
+    .set('Cookie', global.signin())
+    .send({
+      title: 'title',
+      price: -10
+    })
+    .expect(400);
 
+  await request(app)
+    .post(path)
+    .set('Cookie', global.signin())
+    .send({
+      title: 'title'
+    })
+    .expect(400);
 });
 
-it('creates ticket with valid inputs', async () => {
+it('creates ticket with valid input', async () => {
 
 });
