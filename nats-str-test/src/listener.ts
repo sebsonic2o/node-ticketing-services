@@ -11,6 +11,11 @@ const stan = nats.connect('ticketing', randomBytes(4).toString('hex'), {
 stan.on('connect', () => {
   console.log('listener is connected to nats streaming server...')
 
+  stan.on('close', () => {
+    console.log('nats connection closed...');
+    process.exit();
+  });
+
   const options = stan.subscriptionOptions()
     .setManualAckMode(true);
 
@@ -32,3 +37,6 @@ stan.on('connect', () => {
     msg.ack();
   });
 });
+
+process.on('SIGINT', () => { stan.close() });
+process.on('SIGTERM', () => { stan.close() });
