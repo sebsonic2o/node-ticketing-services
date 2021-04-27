@@ -11,7 +11,10 @@ const stan = nats.connect('ticketing', randomBytes(4).toString('hex'), {
 stan.on('connect', () => {
   console.log('listener is connected to nats streaming server...')
 
-  const subscription = stan.subscribe('ticket:created');
+  const subscription = stan.subscribe(
+    'ticket:created',
+    'listener-queue-group'
+  );
 
   subscription.on('message', (msg: Message) => {
     const data = msg.getData();
