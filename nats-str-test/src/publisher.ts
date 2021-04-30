@@ -8,14 +8,18 @@ const stan = nats.connect('ticketing', 'abc', {
   url: 'http://localhost:4222' // with port forwarding to nats pod `k port-forward {nats-pod} 4222:4222`
 });
 
-stan.on('connect', () => {
+stan.on('connect', async () => {
   console.log('publisher is connected to nats streaming server...')
 
-  const data = {
-    id: '123',
-    title: 'concert',
-    price: 20
-  };
+  const publisher = new TicketCreatedPublisher(stan);
 
-  new TicketCreatedPublisher(stan).publish(data);
+  try {
+    await publisher.publish({
+      id: '123',
+      title: 'concert',
+      price: 20
+    });
+  } catch (err) {
+    // error handling
+  }
 });
