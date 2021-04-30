@@ -9,7 +9,7 @@ const stan = nats.connect('ticketing', 'abc', {
 });
 
 stan.on('connect', async () => {
-  console.log('publisher is connected to nats streaming server...')
+  console.log('publisher is connected to nats streaming server...');
 
   const publisher = new TicketCreatedPublisher(stan);
 

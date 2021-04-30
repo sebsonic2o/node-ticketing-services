@@ -10,7 +10,7 @@ const stan = nats.connect('ticketing', randomBytes(4).toString('hex'), {
 });
 
 stan.on('connect', () => {
-  console.log('listener is connected to nats streaming server...')
+  console.log('listener is connected to nats streaming server...');
 
   stan.on('close', () => {
     console.log('nats connection closed...');
