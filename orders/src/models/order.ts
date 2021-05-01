@@ -2,10 +2,12 @@ import mongoose from 'mongoose';
 import { OrderStatus } from '@sebsonic2o-org/common';
 import { TicketDocument } from './ticket';
 
+export { OrderStatus };
+
 // an interface to describe the properties required to create
 interface OrderAttributes {
   userId: string;
-  status: OrderStatus;
+  status?: OrderStatus;
   expiresAt: Date;
   ticket: TicketDocument;
 }

@@ -1,8 +1,11 @@
 import express, { Request, Response} from 'express';
 import { body } from 'express-validator';
-import { requireAuth, validateRequest } from '@sebsonic2o-org/common';
+import { requireAuth, validateRequest, NotFoundError, BadRequestError } from '@sebsonic2o-org/common';
+import { Ticket } from '../models/ticket';
+import { Order } from '../models/order';
 
 const router = express.Router();
+const EXPIRATION_WINDOW_SECONDS = 15 * 60;
 
 router.post(
   '/api/orders',
@@ -14,7 +17,38 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    res.send({});
+    const { ticketId } = req.body;
+
+    // find ticket to order
+    const ticket = await Ticket.findById(ticketId);
+
+    if (!ticket) {
+      throw new NotFoundError();
+    }
+
+    // verify ticket is not reserved
+    const isReserved = await ticket.isReserved();
+
+    if (isReserved) {
+      throw new BadRequestError('Ticket is already reserved');
+    }
+
+    // set expiration for order
+    const expiration = new Date();
+    expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS);
+
+    // build and save order
+    const order = Order.build({
+      userId: req.currentUser!.id,
+      expiresAt: expiration,
+      ticket
+    });
+
+    await order.save();
+
+    // publish order created event
+
+    res.status(201).send(order);
 });
 
 export { router as createOrderRouter };
