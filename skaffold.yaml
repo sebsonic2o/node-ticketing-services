@@ -8,6 +8,14 @@ build:
   local:
     push: false
   artifacts:
+    - image: sebsonic2o/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
     - image: sebsonic2o/tickets
       context: tickets
       docker:
