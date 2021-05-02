@@ -128,4 +128,4 @@ it('publishes a ticket updated event', async () => {
     .expect(200);
 
   expect(natsWrapper.client.publish).toHaveBeenCalledWith('ticket:updated', expect.anything(), expect.anything());
-})
+});

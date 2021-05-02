@@ -3,6 +3,8 @@ import { body } from 'express-validator';
 import { requireAuth, validateRequest, NotFoundError, BadRequestError } from '@sebsonic2o-org/common';
 import { Ticket } from '../models/ticket';
 import { Order } from '../models/order';
+import { natsWrapper } from '../nats-wrapper';
+import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher';
 
 const router = express.Router();
 const EXPIRATION_WINDOW_SECONDS = 15 * 60;
@@ -47,6 +49,15 @@ router.post(
     await order.save();
 
     // publish order created event
+    new OrderCreatedPublisher(natsWrapper.client).publish({
+      id: order.id,
+      expiresAt: order.expiresAt.toISOString(), // to be time zone agnostic (utc)
+      userId: order.userId,
+      ticket: {
+        id: ticket.id,
+        price: ticket.price
+      }
+    });
 
     res.status(201).send(order);
 });

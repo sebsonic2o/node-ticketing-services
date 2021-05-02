@@ -94,4 +94,20 @@ it('creates order with valid input', async () => {
   expect(orders.length).toEqual(1);
 });
 
-it.todo('publishes an order created event');
+it('publishes an order created event', async () => {
+  const ticket = Ticket.build({
+    title: 'title',
+    price: 100
+  });
+  await ticket.save();
+
+  await request(app)
+    .post(path)
+    .set('Cookie', global.signin())
+    .send({
+      ticketId: ticket.id
+    })
+    .expect(201);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalledWith('order:created', expect.anything(), expect.anything());
+});

@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 import { OrderStatus } from '../../models/order';
+import { natsWrapper } from '../../nats-wrapper';
 
 const path = '/api/orders';
 
@@ -79,4 +80,28 @@ it('cancels order for given user', async () => {
   expect(response.body.status).toEqual(OrderStatus.Cancelled);
 });
 
-it.todo('publishes an order cancelled event');
+it('publishes an order cancelled event', async () => {
+  const ticket = Ticket.build({
+    title: 'title',
+    price: 100
+  });
+  await ticket.save();
+
+  const cookie = global.signin();
+
+  const { body: order } = await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      ticketId: ticket.id
+    })
+    .expect(201);
+
+  await request(app)
+    .delete(`${path}/${order.id}`)
+    .set('Cookie', cookie)
+    .send()
+    .expect(204);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalledWith('order:cancelled', expect.anything(), expect.anything());
+});

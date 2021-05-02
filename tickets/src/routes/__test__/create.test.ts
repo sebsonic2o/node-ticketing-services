@@ -95,4 +95,4 @@ it('publishes a ticket created event', async () => {
     .expect(201);
 
   expect(natsWrapper.client.publish).toHaveBeenCalledWith('ticket:created', expect.anything(), expect.anything());
-})
+});
