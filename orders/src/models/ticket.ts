@@ -3,6 +3,7 @@ import { Order, OrderStatus } from './order';
 
 // an interface to describe the properties required to create
 interface TicketAttributes {
+  id: string;
   title: string;
   price: number;
 }
@@ -41,7 +42,11 @@ const TicketSchema = new mongoose.Schema({
 
 // a custom function to plug in type checking into model
 TicketSchema.statics.build = (attrs: TicketAttributes) => {
-  return new Ticket(attrs);
+  return new Ticket({
+    _id: attrs.id,
+    title: attrs.title,
+    price: attrs.price
+  });
 };
 
 // adding custom method to document

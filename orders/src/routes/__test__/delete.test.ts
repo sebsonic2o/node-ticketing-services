@@ -28,6 +28,7 @@ it('returns error if order is not found', async () => {
 
 it('returns error when user does not own order', async () => {
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: 'title',
     price: 100
   });
@@ -50,6 +51,7 @@ it('returns error when user does not own order', async () => {
 
 it('cancels order for given user', async () => {
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: 'title',
     price: 100
   });
@@ -82,6 +84,7 @@ it('cancels order for given user', async () => {
 
 it('publishes an order cancelled event', async () => {
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: 'title',
     price: 100
   });

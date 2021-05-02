@@ -26,6 +26,7 @@ it('returns error if order is not found', async () => {
 
 it('returns error when user does not own order', async () => {
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: 'title',
     price: 100
   });
@@ -48,6 +49,7 @@ it('returns error when user does not own order', async () => {
 
 it('returns order for given user', async () => {
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: 'title',
     price: 100
   });

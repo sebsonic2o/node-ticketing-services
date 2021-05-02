@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
 import request from 'supertest';
+import mongoose from 'mongoose';
 import { app } from '../../app';
 import { Order } from '../../models/order';
 import { Ticket } from '../../models/ticket';
@@ -31,11 +31,17 @@ it('can be accessed when user is signed in', async () => {
   expect(response.status).not.toEqual(401);
 });
 
-it('returns error with missing ticket id', async () => {
+it('returns error with invalid ticket id', async () => {
   await request(app)
     .post(path)
     .set('Cookie', global.signin())
     .send({ ticketId: '' })
+    .expect(400);
+
+  await request(app)
+    .post(path)
+    .set('Cookie', global.signin())
+    .send({ ticketId: 'any' })
     .expect(400);
 });
 
@@ -51,6 +57,7 @@ it('returns error if ticket does not exist', async () => {
 
 it('returns error if ticket is already reserved', async () => {
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: 'title',
     price: 100
   });
@@ -74,6 +81,7 @@ it('returns error if ticket is already reserved', async () => {
 
 it('creates order with valid input', async () => {
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: 'title',
     price: 100
   });
@@ -96,6 +104,7 @@ it('creates order with valid input', async () => {
 
 it('publishes an order created event', async () => {
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: 'title',
     price: 100
   });
