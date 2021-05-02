@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { OrderStatus } from '@sebsonic2o-org/common';
 import { TicketDocument } from './ticket';
 
@@ -20,6 +21,7 @@ interface OrderModel extends mongoose.Model<OrderDocument> {
 // an interface to describe the document properties
 interface OrderDocument extends mongoose.Document {
   userId: string;
+  version: number;
   status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDocument;
@@ -48,10 +50,12 @@ const OrderSchema = new mongoose.Schema({
     transform(doc, ret) {
       ret.id = ret._id;
       delete ret._id;
-      delete ret.__v;
     }
   }
 });
+
+OrderSchema.set('versionKey', 'version'); // instead of __v
+OrderSchema.plugin(updateIfCurrentPlugin);
 
 // a custom function to plug in type checking into model
 OrderSchema.statics.build = (attrs: OrderAttributes) => {

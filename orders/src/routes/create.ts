@@ -53,6 +53,7 @@ router.post(
     // publish order created event
     new OrderCreatedPublisher(natsWrapper.client).publish({
       id: order.id,
+      version: order.version,
       expiresAt: order.expiresAt.toISOString(), // to be time zone agnostic (utc)
       userId: order.userId,
       ticket: {
