@@ -12,6 +12,7 @@ interface TicketAttributes {
 // an interface to describe the model properties
 interface TicketModel extends mongoose.Model<TicketDocument> {
   build(attrs: TicketAttributes): TicketDocument;
+  findByEvent(event: { id: string, version: number }): Promise<TicketDocument | null>;
 }
 
 // an interface to describe the document properties
@@ -50,6 +51,13 @@ TicketSchema.statics.build = (attrs: TicketAttributes) => {
     _id: attrs.id,
     title: attrs.title,
     price: attrs.price
+  });
+};
+
+TicketSchema.statics.findByEvent = (event: { id: string, version: number }) => {
+  return Ticket.findOne({
+    _id: event.id,
+    version: event.version - 1
   });
 };
 
