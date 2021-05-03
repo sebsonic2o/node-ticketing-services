@@ -1,6 +1,6 @@
 import express, { Request, Response} from 'express';
 import { body } from 'express-validator';
-import { requireAuth, validateRequest, NotFoundError, UnauthorizedError } from '@sebsonic2o-org/common';
+import { requireAuth, validateRequest, NotFoundError, BadRequestError, UnauthorizedError } from '@sebsonic2o-org/common';
 import { Ticket } from '../models/ticket';
 import { natsWrapper } from '../nats-wrapper';
 import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
@@ -25,6 +25,10 @@ router.put(
 
     if (!ticket) {
       throw new NotFoundError();
+    }
+
+    if (ticket.orderId) {
+      throw new BadRequestError('Ticket is reserved and cannot be edited');
     }
 
     if (ticket.userId !== req.currentUser!.id) {

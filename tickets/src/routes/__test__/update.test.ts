@@ -18,6 +18,32 @@ it('cannot be accessed when user is not signed in', async () => {
     .expect(401);
 });
 
+it('returns error when ticket is reserved', async () => {
+  const cookie = global.signin();
+
+  const response = await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      title: 'title',
+      price: 100
+    })
+    .expect(201);
+
+  const ticket = await Ticket.findById(response.body.id);
+  ticket!.set({ orderId: new mongoose.Types.ObjectId().toHexString() });
+  await ticket!.save();
+
+  await request(app)
+    .put(`${path}/${ticket!.id}`)
+    .set('Cookie', cookie)
+    .send({
+      title: 'newtitle',
+      price: 200
+    })
+    .expect(400);
+});
+
 it('returns error when user does not own ticket', async () => {
   const response = await request(app)
     .post(path)
