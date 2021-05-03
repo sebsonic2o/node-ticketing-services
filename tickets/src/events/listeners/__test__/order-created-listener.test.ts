@@ -48,6 +48,14 @@ it('reserves ticket by setting order id', async () => {
   expect(ticket!.orderId).toEqual(data.id);
 });
 
+it('publishes ticket updated event', async () => {
+  const { listener, data, msg } = await setup();
+
+  await listener.onMessage(data, msg);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalledWith('ticket:updated', expect.anything(), expect.anything());
+});
+
 it('acknowledges message', async () => {
   const { listener, data, msg } = await setup();
 

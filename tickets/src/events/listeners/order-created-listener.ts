@@ -3,7 +3,6 @@ import { Listener, Subject, OrderCreatedEvent } from '@sebsonic2o-org/common';
 import { queueGroupName } from './queue-group-name';
 import { Ticket } from '../../models/ticket';
 import { TicketUpdatedPublisher } from '../publishers/ticket-updated-publisher';
-import { natsWrapper } from '../../nats-wrapper';
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   readonly subject = Subject.OrderCreated;
@@ -19,11 +18,12 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
     ticket.set({ orderId: data.id });
     await ticket.save();
 
-    new TicketUpdatedPublisher(natsWrapper.client).publish({
+    new TicketUpdatedPublisher(this.client).publish({
       id: ticket.id,
       version: ticket.version,
       title: ticket.title,
       price: ticket.price,
+      orderId: ticket.orderId,
       userId: ticket.userId
     });
 
