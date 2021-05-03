@@ -58,3 +58,15 @@ it('acknowledges message', async () => {
   // assert ack function call
   expect(msg.ack).toHaveBeenCalled();
 });
+
+it('does not acknowledge out-of-order events', async () => {
+  const { listener, data, msg } = await setup();
+
+  data.version += 1;
+
+  try {
+    await listener.onMessage(data, msg);
+  } catch (err) {}
+
+  expect(msg.ack).not.toHaveBeenCalled();
+});
