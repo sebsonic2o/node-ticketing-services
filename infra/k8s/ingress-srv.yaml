@@ -10,6 +10,13 @@ spec:
     - host: ticketing.sebsonic2o.org
       http:
         paths:
+          - path: /api/payments/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: payments-srv
+                port:
+                  number: 3000
           - path: /api/orders/?(.*)
             pathType: Prefix
             backend:
