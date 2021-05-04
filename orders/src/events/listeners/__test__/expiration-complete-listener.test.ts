@@ -6,7 +6,7 @@ import { natsWrapper } from '../../../nats-wrapper';
 import { Ticket } from '../../../models/ticket';
 import { Order } from '../../../models/order';
 
-const setup = async () => {
+const setup = async (orderStatus?: OrderStatus) => {
   // create listener instance
   const listener = new ExpirationCompleteListener(natsWrapper.client);
 
@@ -20,6 +20,7 @@ const setup = async () => {
 
   const order = Order.build({
     userId: new mongoose.Types.ObjectId().toHexString(),
+    status: orderStatus,
     expiresAt: new Date(),
     ticket
   });
@@ -64,5 +65,17 @@ it('acknowledges message', async () => {
   await listener.onMessage(data, msg);
 
   // assert ack function call
+  expect(msg.ack).toHaveBeenCalled();
+});
+
+it('does not cancel order when complete', async () => {
+  const { listener, data, msg } = await setup(OrderStatus.Complete);
+
+  await listener.onMessage(data, msg);
+
+  const order = await Order.findById(data.orderId);
+
+  expect(order!.status).not.toEqual(OrderStatus.Cancelled);
+  expect(natsWrapper.client.publish).not.toHaveBeenCalled();
   expect(msg.ack).toHaveBeenCalled();
 });
