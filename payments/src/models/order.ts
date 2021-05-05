@@ -15,6 +15,7 @@ interface OrderAttributes {
 // an interface to describe the model properties
 interface OrderModel extends mongoose.Model<OrderDocument> {
   build(attrs: OrderAttributes): OrderDocument;
+  findByEvent(event: { id: string, version: number }): Promise<OrderDocument | null>;
 }
 
 // an interface to describe the document properties
@@ -53,13 +54,19 @@ const OrderSchema = new mongoose.Schema({
 OrderSchema.set('versionKey', 'version'); // instead of __v
 OrderSchema.plugin(updateIfCurrentPlugin);
 
-// a custom function to plug in type checking into model
 OrderSchema.statics.build = (attrs: OrderAttributes) => {
   return new Order({
     _id: attrs.id,
     userId: attrs.userId,
     status: attrs.status,
     price: attrs.price
+  });
+};
+
+OrderSchema.statics.findByEvent = (event: { id: string, version: number }) => {
+  return Order.findOne({
+    _id: event.id,
+    version: event.version - 1
   });
 };
 
