@@ -11,8 +11,8 @@ const setup = async () => {
 
   // create order
   const order = Order.build({
-    id: new mongoose.Types.ObjectId().toHexString(),
-    userId: new mongoose.Types.ObjectId().toHexString(),
+    id: mongoose.Types.ObjectId().toHexString(),
+    userId: mongoose.Types.ObjectId().toHexString(),
     price: 100
   });
   await order.save();
@@ -22,7 +22,7 @@ const setup = async () => {
     version: order.version + 1,
     id: order.id,
     ticket: {
-      id: new mongoose.Types.ObjectId().toHexString()
+      id: mongoose.Types.ObjectId().toHexString()
     }
   };
 
