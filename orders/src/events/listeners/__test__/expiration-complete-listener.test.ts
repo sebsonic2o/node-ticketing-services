@@ -12,14 +12,14 @@ const setup = async (orderStatus?: OrderStatus) => {
 
   // create order
   const ticket = Ticket.build({
-    id: new mongoose.Types.ObjectId().toHexString(),
+    id: mongoose.Types.ObjectId().toHexString(),
     title: 'title',
     price: 100
   });
   await ticket.save();
 
   const order = Order.build({
-    userId: new mongoose.Types.ObjectId().toHexString(),
+    userId: mongoose.Types.ObjectId().toHexString(),
     status: orderStatus,
     expiresAt: new Date(),
     ticket

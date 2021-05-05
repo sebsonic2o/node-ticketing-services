@@ -46,12 +46,10 @@ it('returns error with invalid ticket id', async () => {
 });
 
 it('returns error if ticket does not exist', async () => {
-  const ticketId = mongoose.Types.ObjectId();
-
   await request(app)
     .post(path)
     .set('Cookie', global.signin())
-    .send({ ticketId })
+    .send({ ticketId: mongoose.Types.ObjectId().toHexString() })
     .expect(404);
 });
 

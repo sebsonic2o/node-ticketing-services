@@ -10,11 +10,11 @@ const setup = async () => {
   const listener = new OrderCancelledListener(natsWrapper.client);
 
   // create ticket
-  const orderId = new mongoose.Types.ObjectId().toHexString();
+  const orderId = mongoose.Types.ObjectId().toHexString();
   const ticket = Ticket.build({
     title: 'title',
     price: 100,
-    userId: new mongoose.Types.ObjectId().toHexString()
+    userId: mongoose.Types.ObjectId().toHexString()
   });
   ticket.set({ orderId });
   await ticket.save();

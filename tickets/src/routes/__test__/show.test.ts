@@ -24,7 +24,7 @@ it('returns ticket if ticket is found', async () => {
 });
 
 it('returns error if ticket is not found', async () => {
-  const id = new mongoose.Types.ObjectId().toHexString();
+  const id = mongoose.Types.ObjectId().toHexString();
 
   await request(app)
     .get(`${path}/${id}`)

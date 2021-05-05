@@ -7,7 +7,7 @@ import { natsWrapper } from '../../nats-wrapper';
 const path = '/api/tickets';
 
 it('cannot be accessed when user is not signed in', async () => {
-  const id = new mongoose.Types.ObjectId().toHexString();
+  const id = mongoose.Types.ObjectId().toHexString();
 
   await request(app)
     .put(`${path}/${id}`)
@@ -31,7 +31,7 @@ it('returns error when ticket is reserved', async () => {
     .expect(201);
 
   const ticket = await Ticket.findById(response.body.id);
-  ticket!.set({ orderId: new mongoose.Types.ObjectId().toHexString() });
+  ticket!.set({ orderId: mongoose.Types.ObjectId().toHexString() });
   await ticket!.save();
 
   await request(app)
@@ -65,7 +65,7 @@ it('returns error when user does not own ticket', async () => {
 });
 
 it('returns error with invalid title or price', async () => {
-  const id = new mongoose.Types.ObjectId().toHexString();
+  const id = mongoose.Types.ObjectId().toHexString();
 
   await request(app)
     .put(`${path}/${id}`)
@@ -87,7 +87,7 @@ it('returns error with invalid title or price', async () => {
 });
 
 it('returns error if ticket does not exist', async () => {
-  const id = new mongoose.Types.ObjectId().toHexString();
+  const id = mongoose.Types.ObjectId().toHexString();
 
   await request(app)
     .put(`${path}/${id}`)

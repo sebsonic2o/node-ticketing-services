@@ -6,7 +6,7 @@ import { Ticket } from '../../models/ticket';
 const path = '/api/orders';
 
 it('cannot be accessed when user is not signed in', async () => {
-  const id = new mongoose.Types.ObjectId().toHexString();
+  const id = mongoose.Types.ObjectId().toHexString();
 
   await request(app)
     .get(`${path}/${id}`)
@@ -15,7 +15,7 @@ it('cannot be accessed when user is not signed in', async () => {
 });
 
 it('returns error if order is not found', async () => {
-  const id = new mongoose.Types.ObjectId().toHexString();
+  const id = mongoose.Types.ObjectId().toHexString();
 
   await request(app)
     .get(`${path}/${id}`)
