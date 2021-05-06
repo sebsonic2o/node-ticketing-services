@@ -18,7 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sebsonic2o-org/common": "^1.0.13",
+    "@sebsonic2o-org/common": "^1.0.14",
     "@types/bull": "^3.15.1",
     "bull": "^3.22.4",
     "ts-node-dev": "^1.1.6",

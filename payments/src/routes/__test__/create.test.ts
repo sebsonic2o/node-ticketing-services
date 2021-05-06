@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { app } from '../../app';
 import { Order, OrderStatus } from '../../models/order';
 import { Payment } from '../../models/payment';
+import { natsWrapper } from '../../nats-wrapper';
 import { stripe } from '../../stripe';
 
 jest.mock('../../stripe');
@@ -132,4 +133,26 @@ it('creates charge with valid input', async () => {
 
   const payment = await Payment.findOne({ orderId: order.id });
   expect(payment).not.toBeNull();
+});
+
+it('publishes a payment created event', async () => {
+  const userId = mongoose.Types.ObjectId().toHexString();
+
+  const order = Order.build({
+    id: mongoose.Types.ObjectId().toHexString(),
+    userId,
+    price: 100
+  });
+  await order.save();
+
+  await request(app)
+    .post(path)
+    .set('Cookie', global.signin({ id: userId }))
+    .send({
+      orderId: order.id,
+      token: 'tok_visa'
+    })
+    .expect(201);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalledWith('payment:created', expect.anything(), expect.anything());
 });
