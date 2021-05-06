@@ -1,5 +1,6 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
+import { Subject } from '@sebsonic2o-org/common';
 import { app } from '../../app';
 import { Order } from '../../models/order';
 import { Ticket } from '../../models/ticket';
@@ -116,5 +117,5 @@ it('publishes an order created event', async () => {
     })
     .expect(201);
 
-  expect(natsWrapper.client.publish).toHaveBeenCalledWith('order:created', expect.anything(), expect.anything());
+  expect(natsWrapper.client.publish).toHaveBeenCalledWith(Subject.OrderCreated, expect.anything(), expect.anything());
 });

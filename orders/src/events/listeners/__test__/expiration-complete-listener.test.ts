@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import { Message } from 'node-nats-streaming';
-import { ExpirationCompleteEvent, OrderStatus } from '@sebsonic2o-org/common';
+import { ExpirationCompleteEvent, Subject } from '@sebsonic2o-org/common';
 import { ExpirationCompleteListener } from '../expiration-complete-listener';
 import { natsWrapper } from '../../../nats-wrapper';
 import { Ticket } from '../../../models/ticket';
-import { Order } from '../../../models/order';
+import { Order, OrderStatus } from '../../../models/order';
 
 const setup = async (orderStatus?: OrderStatus) => {
   // create listener instance
@@ -55,7 +55,7 @@ it('publishes order cancelled event', async () => {
 
   await listener.onMessage(data, msg);
 
-  expect(natsWrapper.client.publish).toHaveBeenCalledWith('order:cancelled', expect.anything(), expect.anything());
+  expect(natsWrapper.client.publish).toHaveBeenCalledWith(Subject.OrderCancelled, expect.anything(), expect.anything());
 });
 
 it('acknowledges message', async () => {

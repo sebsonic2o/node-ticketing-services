@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Message } from 'node-nats-streaming';
-import { OrderCancelledEvent } from '@sebsonic2o-org/common';
+import { OrderCancelledEvent, Subject } from '@sebsonic2o-org/common';
 import { OrderCancelledListener } from '../order-cancelled-listener';
 import { natsWrapper } from '../../../nats-wrapper';
 import { Ticket } from '../../../models/ticket';
@@ -52,7 +52,7 @@ it('publishes ticket updated event', async () => {
 
   await listener.onMessage(data, msg);
 
-  expect(natsWrapper.client.publish).toHaveBeenCalledWith('ticket:updated', expect.anything(), expect.anything());
+  expect(natsWrapper.client.publish).toHaveBeenCalledWith(Subject.TicketUpdated, expect.anything(), expect.anything());
 });
 
 it('acknowledges message', async () => {

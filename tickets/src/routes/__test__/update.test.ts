@@ -1,5 +1,6 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
+import { Subject } from '@sebsonic2o-org/common';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 import { natsWrapper } from '../../nats-wrapper';
@@ -153,5 +154,5 @@ it('publishes a ticket updated event', async () => {
     })
     .expect(200);
 
-  expect(natsWrapper.client.publish).toHaveBeenCalledWith('ticket:updated', expect.anything(), expect.anything());
+  expect(natsWrapper.client.publish).toHaveBeenCalledWith(Subject.TicketUpdated, expect.anything(), expect.anything());
 });

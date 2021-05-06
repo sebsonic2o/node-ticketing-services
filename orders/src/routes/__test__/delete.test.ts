@@ -1,5 +1,6 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
+import { Subject } from '@sebsonic2o-org/common';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 import { OrderStatus } from '../../models/order';
@@ -106,5 +107,5 @@ it('publishes an order cancelled event', async () => {
     .send()
     .expect(204);
 
-  expect(natsWrapper.client.publish).toHaveBeenCalledWith('order:cancelled', expect.anything(), expect.anything());
+  expect(natsWrapper.client.publish).toHaveBeenCalledWith(Subject.OrderCancelled, expect.anything(), expect.anything());
 });

@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { Subject } from '@sebsonic2o-org/common';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 import { natsWrapper } from '../../nats-wrapper';
@@ -94,5 +95,5 @@ it('publishes a ticket created event', async () => {
     })
     .expect(201);
 
-  expect(natsWrapper.client.publish).toHaveBeenCalledWith('ticket:created', expect.anything(), expect.anything());
+  expect(natsWrapper.client.publish).toHaveBeenCalledWith(Subject.TicketCreated, expect.anything(), expect.anything());
 });
