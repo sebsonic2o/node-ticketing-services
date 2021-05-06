@@ -2,6 +2,9 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 import { app } from '../../app';
 import { Order, OrderStatus } from '../../models/order';
+import { stripe } from '../../stripe';
+
+jest.mock('../../stripe');
 
 const path = '/api/payments';
 
@@ -99,4 +102,30 @@ it('returns error when purchasing cancelled order', async () => {
       token: 'any'
     })
     .expect(400);
+});
+
+it('creates charge with valid input', async () => {
+  const userId = mongoose.Types.ObjectId().toHexString();
+
+  const order = Order.build({
+    id: mongoose.Types.ObjectId().toHexString(),
+    userId,
+    price: 100
+  });
+  await order.save();
+
+  await request(app)
+    .post(path)
+    .set('Cookie', global.signin({ id: userId }))
+    .send({
+      orderId: order.id,
+      token: 'tok_visa'
+    })
+    .expect(201);
+
+  const chargeCalls = (stripe.charges.create as jest.Mock).mock.calls
+  expect(chargeCalls.length).toEqual(1);
+  expect(chargeCalls[0][0].currency).toEqual('usd');
+  expect(chargeCalls[0][0].source).toEqual('tok_visa');
+  expect(chargeCalls[0][0].amount).toEqual(order.price * 100);
 });

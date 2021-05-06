@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import express, { Request, Response} from 'express';
 import { body } from 'express-validator';
 import { requireAuth, validateRequest, NotFoundError, UnauthorizedError, BadRequestError } from '@sebsonic2o-org/common';
+import { stripe } from '../stripe';
 import { Order, OrderStatus } from '../models/order';
 
 const router = express.Router();
@@ -35,6 +36,12 @@ router.post(
     if (order.status === OrderStatus.Cancelled) {
       throw new BadRequestError('Order is cancelled and cannot be paid for');
     }
+
+    await stripe.charges.create({
+      currency: 'usd',
+      amount: order.price * 100,
+      source: token
+    });
 
     res.status(201).send({});
 });
