@@ -4,6 +4,7 @@ import { body } from 'express-validator';
 import { requireAuth, validateRequest, NotFoundError, UnauthorizedError, BadRequestError } from '@sebsonic2o-org/common';
 import { stripe } from '../stripe';
 import { Order, OrderStatus } from '../models/order';
+import { Payment } from '../models/payment';
 
 const router = express.Router();
 
@@ -37,13 +38,19 @@ router.post(
       throw new BadRequestError('Order is cancelled and cannot be paid for');
     }
 
-    await stripe.charges.create({
+    const charge = await stripe.charges.create({
       currency: 'usd',
       amount: order.price * 100,
       source: token
     });
 
-    res.status(201).send({});
+    const payment = Payment.build({
+      orderId,
+      chargeId: charge.id
+    });
+    await payment.save();
+
+    res.status(201).send(payment);
 });
 
 export { router as createChargeRouter };
