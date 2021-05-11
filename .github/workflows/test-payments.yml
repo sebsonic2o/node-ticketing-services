@@ -1,6 +1,6 @@
-name: tests
+name: test-payments
 
-# Controls when the action will run. 
+# Controls when the action will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -19,4 +19,4 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - run: cd auth && npm install && npm run test:ci
+      - run: cd payments && npm install && npm run test:ci
